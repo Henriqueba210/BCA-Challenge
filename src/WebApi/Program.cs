@@ -8,15 +8,15 @@ using Auction.Infrastructure;
 
 using Microsoft.AspNetCore.Http.Features;
 
-using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 using Scalar.AspNetCore;
 
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services
@@ -40,23 +40,7 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService("Location"))
-    .WithMetrics(metrics =>
-    {
-        metrics.AddAspNetCoreInstrumentation();
-        metrics.AddHttpClientInstrumentation();
-
-        metrics.AddOtlpExporter();
-    })
-    .WithTracing(tracing =>
-    {
-        tracing.AddAspNetCoreInstrumentation();
-        tracing.AddHttpClientInstrumentation();
-
-        tracing.AddOtlpExporter();
-    });
-
-builder.Logging.AddOpenTelemetry();
+    .ConfigureResource(resource => resource.AddService("Auction"));
 
 builder.Services.AddProblemDetails(options =>
 {
@@ -77,7 +61,7 @@ app.MapOpenApi();
 app.MapScalarApiReference(options =>
 {
     options
-        .WithTitle("Location API")
+        .WithTitle("Auction API")
         .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Fetch);
 });
 
@@ -87,7 +71,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapLocationEndpoints();
+app.MapAuctionEndpoints();
 
 app.UseHttpsRedirection();
 

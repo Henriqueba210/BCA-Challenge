@@ -24,6 +24,5 @@
     <ItemGroup>
       <Folder Include="Builders\" />
       <Folder Include="Common\" />
-      <Folder Include="Locations\" />
     </ItemGroup>
 </Project>
