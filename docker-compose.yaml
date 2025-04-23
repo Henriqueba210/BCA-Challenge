@@ -1,0 +1,38 @@
+﻿services:
+  location.webapi:
+    image: api
+    container_name: location-webapi
+    build:
+      context: .
+      dockerfile: src/WebApi/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://location.dashboard:18889
+    networks:
+      - location-network
+  
+  location.dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
+    container_name: dashboard
+    ports:
+      - "18888:18888"
+    networks:
+      - location-network
+
+  location.frontend:
+    image: frontend
+    container_name: location-frontend
+    build:
+      context: ./src/Presentation
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - location.webapi
+    networks:
+      - location-network
+
+networks:
+  location-network:
+    driver: bridge
