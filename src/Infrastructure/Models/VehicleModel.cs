@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 using Auction.Domain.Enums;
 
@@ -15,6 +16,8 @@ public class VehicleEntity
     public string Model { get; set; } = default!;
     public int Year { get; set; }
     public decimal StartingBid { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime LastUpdated { get; set; }
 }
 
 public class SedanEntity : VehicleEntity

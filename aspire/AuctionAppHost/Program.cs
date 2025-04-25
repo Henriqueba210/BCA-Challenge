@@ -1,9 +1,9 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("postgres");
+var postgresdb = builder.AddPostgres("postgresdb");
 
 builder.AddProject<Projects.WebApi>("AuctionWebApi")
-    .WithReference(postgres)
-    .WithEnvironment("ConnectionStrings__DefaultConnection", "$(postgres:connectionString)");
+    .WithReference(postgresdb)
+    .WaitFor(postgresdb);
 
 await builder.Build().RunAsync();

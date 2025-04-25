@@ -29,7 +29,7 @@ public class AuctionApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { "ConnectionStrings:DefaultConnection", _postgresConnectionString ?? "" },
+                { "ConnectionStrings:postgresdb", _postgresConnectionString ?? "" },
             }!);
         });
         return base.CreateHost(builder);

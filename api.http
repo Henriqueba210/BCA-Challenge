@@ -1,7 +1,9 @@
-### 1. Add Vehicles (all types)
+@baseUrl = https://localhost:7018
 
-// Add a Sedan
-POST http://localhost:5000/api/auction/vehicle/
+# 1. Add Vehicles (all types)
+
+### Add a Sedan
+POST {{baseUrl}}/api/auction/vehicle/
 Content-Type: application/json
 
 {
@@ -14,8 +16,8 @@ Content-Type: application/json
   "numberOfDoors": 4
 }
 
-// Add a Hatchback
-POST http://localhost:5000/api/auction/vehicle/
+### Add a Hatchback
+POST {{baseUrl}}/api/auction/vehicle/
 Content-Type: application/json
 
 {
@@ -28,8 +30,8 @@ Content-Type: application/json
   "numberOfDoors": 5
 }
 
-// Add an SUV
-POST http://localhost:5000/api/auction/vehicle/
+### Add an SUV
+POST {{baseUrl}}/api/auction/vehicle/
 Content-Type: application/json
 
 {
@@ -42,8 +44,8 @@ Content-Type: application/json
   "numberOfSeats": 7
 }
 
-// Add a Truck
-POST http://localhost:5000/api/auction/vehicle/
+### Add a Truck
+POST {{baseUrl}}/api/auction/vehicle/
 Content-Type: application/json
 
 {
@@ -57,7 +59,7 @@ Content-Type: application/json
 }
 
 ### 2. Attempt to add a vehicle with duplicate VIN (should fail)
-POST http://localhost:5000/api/auction/vehicle/
+POST {{baseUrl}}/api/auction/vehicle/
 Content-Type: application/json
 
 {
@@ -72,24 +74,24 @@ Content-Type: application/json
 
 ### 3. Search for vehicles by type, manufacturer, model, year
 
-// Search by type
-GET http://localhost:5000/api/auction/vehicle/?type=Sedan
+### Search by type
+GET {{baseUrl}}/api/auction/vehicle/?type=Sedan
 
-// Search by manufacturer
-GET http://localhost:5000/api/auction/vehicle/?manufacturer=Honda
+### Search by manufacturer
+GET {{baseUrl}}/api/auction/vehicle/?manufacturer=Honda
 
-// Search by model
-GET http://localhost:5000/api/auction/vehicle/?model=CRV
+### Search by model
+GET {{baseUrl}}/api/auction/vehicle/?model=CRV
 
-// Search by year
-GET http://localhost:5000/api/auction/vehicle/?year=2020
+### Search by year
+GET {{baseUrl}}/api/auction/vehicle/?year=2020
 
-// Search by multiple filters
-GET http://localhost:5000/api/auction/vehicle/?type=Truck&manufacturer=Volvo
+### Search by multiple filters
+GET {{baseUrl}}/api/auction/vehicle/?type=Truck&manufacturer=Volvo
 
 ### 4. Start an auction for a vehicle
 
-POST http://localhost:5000/api/auction/start
+POST {{baseUrl}}/api/auction/start
 Content-Type: application/json
 
 {
@@ -98,7 +100,7 @@ Content-Type: application/json
 
 ### 5. Attempt to start an auction for a non-existent vehicle (should fail)
 
-POST http://localhost:5000/api/auction/start
+POST {{baseUrl}}/api/auction/start
 Content-Type: application/json
 
 {
@@ -107,7 +109,7 @@ Content-Type: application/json
 
 ### 6. Attempt to start an auction for a vehicle already in auction (should fail)
 
-POST http://localhost:5000/api/auction/start
+POST {{baseUrl}}/api/auction/start
 Content-Type: application/json
 
 {
@@ -116,7 +118,7 @@ Content-Type: application/json
 
 ### 7. Place a bid on an active auction
 
-POST http://localhost:5000/api/bid/
+POST {{baseUrl}}/api/bid/
 Content-Type: application/json
 
 {
@@ -127,7 +129,7 @@ Content-Type: application/json
 
 ### 8. Place a lower or equal bid (should fail)
 
-POST http://localhost:5000/api/bid/
+POST {{baseUrl}}/api/bid/
 Content-Type: application/json
 
 {
@@ -138,7 +140,7 @@ Content-Type: application/json
 
 ### 9. Place a higher bid
 
-POST http://localhost:5000/api/bid/
+POST {{baseUrl}}/api/bid/
 Content-Type: application/json
 
 {
@@ -149,7 +151,7 @@ Content-Type: application/json
 
 ### 10. Place a bid on a vehicle with no active auction (should fail)
 
-POST http://localhost:5000/api/bid/
+POST {{baseUrl}}/api/bid/
 Content-Type: application/json
 
 {
@@ -160,7 +162,7 @@ Content-Type: application/json
 
 ### 11. Close an auction
 
-POST http://localhost:5000/api/auction/close
+POST {{baseUrl}}/api/auction/close
 Content-Type: application/json
 
 {
@@ -169,7 +171,7 @@ Content-Type: application/json
 
 ### 12. Attempt to place a bid after auction is closed (should fail)
 
-POST http://localhost:5000/api/bid/
+POST {{baseUrl}}/api/bid/
 Content-Type: application/json
 
 {
@@ -180,20 +182,20 @@ Content-Type: application/json
 
 ### 13. List all auctions (optionally filter by status, vehicle type, etc.)
 
-GET http://localhost:5000/api/auction/
+GET {{baseUrl}}/api/auction/
 
-// Filter by status
-GET http://localhost:5000/api/auction/?status=Active
+### Filter by status
+GET {{baseUrl}}/api/auction/?status=Active
 
-// Filter by vehicle type
-GET http://localhost:5000/api/auction/?vehicleType=Sedan
+### Filter by vehicle type
+GET {{baseUrl}}/api/auction/?vehicleType=Sedan
 
-// Filter by manufacturer
-GET http://localhost:5000/api/auction/?manufacturer=Toyota
+### Filter by manufacturer
+GET {{baseUrl}}/api/auction/?manufacturer=Toyota
 
-// Filter by model
-GET http://localhost:5000/api/auction/?model=Camry
+### Filter by model
+GET {{baseUrl}}/api/auction/?model=Camry
 
-// Filter by year
-GET http://localhost:5000/api/auction/?year=2020
+### Filter by year
+GET {{baseUrl}}/api/auction/?year=2020
 

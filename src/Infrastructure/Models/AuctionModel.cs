@@ -12,6 +12,8 @@ public class AuctionEntity
     public DateTime StartedAt { get; set; }
     public DateTime? ClosedAt { get; set; }
     public List<BidEntity> Bids { get; set; } = new();
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime LastUpdated { get; set; }
 }
 
 public class BidEntity
@@ -22,4 +24,6 @@ public class BidEntity
     public DateTime PlacedAt { get; set; }
     public string Bidder { get; set; } = default!;
     public AuctionEntity Auction { get; set; } = default!;
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime LastUpdated { get; set; }
 }

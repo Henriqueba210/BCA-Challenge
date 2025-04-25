@@ -12,6 +12,7 @@ using Mapster;
 using MapsterMapper;
 
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 
 using OpenTelemetry.Resources;
 
@@ -69,6 +70,13 @@ builder.Services.AddSingleton<IMapper>(mapperConfig);
 
 
 WebApplication app = builder.Build();
+
+// Apply EF Core migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AuctionDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 app.MapOpenApi();
 app.MapScalarApiReference(options =>

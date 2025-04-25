@@ -1,10 +1,11 @@
+using Auction.Application.Features.Auction.Abstractions;
+using Auction.Application.Features.Vehicle.Abstractions;
+using Auction.Infrastructure.Models; // Add this using if not present
+using Auction.Infrastructure.Repositories;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Auction.Infrastructure.Repositories;
-using Auction.Application.Features.Vehicle.Abstractions;
-using Auction.Application.Features.Auction.Abstractions;
-using Auction.Infrastructure.Models; // Add this using if not present
 
 namespace Auction.Infrastructure;
 
@@ -21,7 +22,8 @@ public static class DependencyInjection
         else
         {
             services.AddDbContext<AuctionDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(configuration.GetConnectionString("postgresdb")
+                    ?? throw new InvalidOperationException("Connection string 'postgresdb' not found.")));
         }
 
         services.AddScoped<IVehicleRepository, VehicleRepository>();
