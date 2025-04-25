@@ -1,7 +1,10 @@
 using Ardalis.Result;
+
+using Auction.Application.Features.Auction.Common;
+using Auction.Domain.Entities;
+
 using MediatR;
-using Domain.Entities;
 
 namespace Application.Features.Auction.Queries;
 
-public record GetAuctionByIdQuery(Guid AuctionId) : IRequest<Result<Domain.Entities.Auction>>;
+public record GetAuctionByIdQuery(Guid AuctionId) : IRequest<Result<AuctionDto>>;

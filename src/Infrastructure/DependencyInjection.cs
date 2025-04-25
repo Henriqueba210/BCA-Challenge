@@ -1,9 +1,9 @@
-using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Auction.Infrastructure.Repositories;
 
-namespace Infrastructure;
+namespace Auction.Infrastructure;
 
 public static class DependencyInjection
 {

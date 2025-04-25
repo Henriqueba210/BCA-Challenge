@@ -1,4 +1,4 @@
-namespace Infrastructure.Entities;
+namespace Auction.Infrastructure.Models;
 
 public class AuctionEntity
 {

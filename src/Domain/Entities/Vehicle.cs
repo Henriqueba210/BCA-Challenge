@@ -1,8 +1,8 @@
-using Domain.Common;
 using Domain.ValueObjects;
 using Domain.Enums;
+using Auction.Domain.Common;
 
-namespace Domain.Entities;
+namespace Auction.Domain.Entities;
 
 public abstract class BaseVehicle : BaseEntity<Vin>
 {

@@ -1,4 +1,5 @@
-using Domain.Common;
+using Auction.Domain.Common;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

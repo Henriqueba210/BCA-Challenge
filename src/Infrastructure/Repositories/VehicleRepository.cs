@@ -1,28 +1,31 @@
-using Domain.Entities;
+
+using Auction.Application.Features.Vehicle.Abstractions;
+using Auction.Domain.Entities;
+
 using Mapster;
+
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Auction.Infrastructure.Repositories;
 
-public class VehicleRepository : IVehicleRepository
+public class VehicleRepository(AuctionDbContext context) : IVehicleRepository
 {
-    private readonly AuctionDbContext _context;
-    public VehicleRepository(AuctionDbContext context) => _context = context;
+    private readonly AuctionDbContext _context = context;
 
-    public async Task<Vehicle?> GetByVinAsync(string vin, CancellationToken cancellationToken = default)
+    public async Task<BaseVehicle?> GetByVinAsync(string vin, CancellationToken cancellationToken)
     {
         var entity = await _context.Vehicles.FindAsync(new object[] { vin }, cancellationToken);
-        return entity?.Adapt<Vehicle>();
+        return entity?.Adapt<BaseVehicle>();
     }
 
-    public async Task AddAsync(Vehicle vehicle, CancellationToken cancellationToken = default)
+    public async Task AddAsync(BaseVehicle vehicle, CancellationToken cancellationToken = default)
     {
-        var entity = vehicle.Adapt<Infrastructure.Entities.VehicleEntity>();
+        var entity = vehicle.Adapt<Entities.VehicleEntity>();
         await _context.Vehicles.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<Vehicle>> SearchAsync(string? type, string? manufacturer, string? model, int? year, CancellationToken cancellationToken = default)
+    public async Task<List<BaseVehicle>> SearchAsync(string? type, string? manufacturer, string? model, int? year, CancellationToken cancellationToken)
     {
         var query = _context.Vehicles.AsQueryable();
         if (!string.IsNullOrEmpty(type))
@@ -34,6 +37,6 @@ public class VehicleRepository : IVehicleRepository
         if (year.HasValue)
             query = query.Where(v => v.Year == year);
         var entities = await query.ToListAsync(cancellationToken);
-        return entities.Adapt<List<Vehicle>>();
+        return entities.Adapt<List<BaseVehicle>>();
     }
 }

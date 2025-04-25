@@ -1,12 +1,13 @@
 using Ardalis.Result;
 using MediatR;
 using System.Collections.Generic;
+using Auction.Application.Features.Vehicle.Common;
 
-namespace Application.Features.Vehicle.Queries;
+namespace Auction.Application.Features.Vehicle.Queries;
 
 public record SearchVehiclesQuery(
     string? Type,
     string? Manufacturer,
     string? Model,
     int? Year
-) : IRequest<Result<List<Domain.Entities.Vehicle>>>;
+) : IRequest<Result<List<VehicleDto>>>;

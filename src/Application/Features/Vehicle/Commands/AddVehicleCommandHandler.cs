@@ -1,23 +1,18 @@
-using Application.Features.Vehicle.Abstractions;
+using Auction.Application.Features.Vehicle.Abstractions;
 using Ardalis.Result;
-using Domain.Entities;
 using Domain.Enums;
 using MediatR;
+using Auction.Domain.Entities;
+using Domain.ValueObjects;
 
-namespace Application.Features.Vehicle.Commands;
+namespace Auction.Application.Features.Vehicle.Commands;
 
-public class AddVehicleCommandHandler : IRequestHandler<AddVehicleCommand, Result>
+public class AddVehicleCommandHandler(IVehicleRepository vehicleRepository) : IRequestHandler<AddVehicleCommand, Result>
 {
-    private readonly IVehicleRepository _vehicleRepository;
-    public AddVehicleCommandHandler(IVehicleRepository vehicleRepository)
-    {
-        _vehicleRepository = vehicleRepository;
-    }
-
     public async Task<Result> Handle(AddVehicleCommand request, CancellationToken cancellationToken)
     {
         // Check for duplicate VIN
-        var existing = await _vehicleRepository.GetByVinAsync(request.Vin, cancellationToken);
+        var existing = await vehicleRepository.GetByVinAsync(request.Vin, cancellationToken);
         if (existing is not null)
             return Result.Error($"A vehicle with VIN '{request.Vin}' already exists.");
 
@@ -25,7 +20,7 @@ public class AddVehicleCommandHandler : IRequestHandler<AddVehicleCommand, Resul
         {
             nameof(VehicleType.Sedan) => new Sedan
             {
-                Id = new Domain.ValueObjects.Vin(request.Vin),
+                Id = new Vin(request.Vin),
                 Manufacturer = request.Manufacturer,
                 Model = request.Model,
                 Year = request.Year,
@@ -34,7 +29,7 @@ public class AddVehicleCommandHandler : IRequestHandler<AddVehicleCommand, Resul
             },
             nameof(VehicleType.Hatchback) => new Hatchback
             {
-                Id = new Domain.ValueObjects.Vin(request.Vin),
+                Id = new Vin(request.Vin),
                 Manufacturer = request.Manufacturer,
                 Model = request.Model,
                 Year = request.Year,
@@ -43,7 +38,7 @@ public class AddVehicleCommandHandler : IRequestHandler<AddVehicleCommand, Resul
             },
             nameof(VehicleType.SUV) => new SUV
             {
-                Id = new Domain.ValueObjects.Vin(request.Vin),
+                Id = new Vin(request.Vin),
                 Manufacturer = request.Manufacturer,
                 Model = request.Model,
                 Year = request.Year,
@@ -52,7 +47,7 @@ public class AddVehicleCommandHandler : IRequestHandler<AddVehicleCommand, Resul
             },
             nameof(VehicleType.Truck) => new Truck
             {
-                Id = new Domain.ValueObjects.Vin(request.Vin),
+                Id = new Vin(request.Vin),
                 Manufacturer = request.Manufacturer,
                 Model = request.Model,
                 Year = request.Year,
@@ -65,7 +60,7 @@ public class AddVehicleCommandHandler : IRequestHandler<AddVehicleCommand, Resul
         if (vehicle == null)
             return Result.Error("Invalid vehicle type.");
 
-        await _vehicleRepository.AddAsync(vehicle, cancellationToken);
+        await vehicleRepository.AddAsync(vehicle, cancellationToken);
         return Result.Success();
     }
 }

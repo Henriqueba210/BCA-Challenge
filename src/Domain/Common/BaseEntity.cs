@@ -1,4 +1,4 @@
-namespace Domain.Common;
+namespace Auction.Domain.Common;
 
 public abstract class BaseEntity<TId>
 {

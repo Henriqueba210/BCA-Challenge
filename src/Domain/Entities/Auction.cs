@@ -1,10 +1,10 @@
-using Domain.Common;
 using Domain.ValueObjects;
 using Domain.Enums;
+using Auction.Domain.Common;
 
-namespace Domain.Entities;
+namespace Auction.Domain.Entities;
 
-public class Auction : BaseEntity<Guid>
+public class AuctionEntity : BaseEntity<Guid>
 {
     public Vin VehicleVin { get; set; } = default!;
     public AuctionStatus Status { get; set; }

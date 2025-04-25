@@ -1,11 +1,10 @@
 using Ardalis.Result;
 using MediatR;
-using Domain.Entities;
-using System.Collections.Generic;
+using Auction.Application.Features.Auction.Common;
 
 namespace Application.Features.Auction.Queries;
 
 public record ListAuctionsQuery(
     string? Status = null,
     string? VehicleType = null
-) : IRequest<Result<List<Domain.Entities.Auction>>>;
+) : IRequest<Result<List<AuctionDto>>>;

@@ -1,7 +1,7 @@
 using FluentValidation;
 using Domain.Enums;
 
-namespace Application.Features.Vehicle.Commands;
+namespace Auction.Application.Features.Vehicle.Commands;
 
 public class AddVehicleCommandValidator : AbstractValidator<AddVehicleCommand>
 {

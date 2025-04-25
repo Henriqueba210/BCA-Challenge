@@ -1,6 +1,6 @@
-using Domain.Entities;
+using Auction.Domain.Entities;
 
-namespace Application.Features.Vehicle.Abstractions;
+namespace Auction.Application.Features.Vehicle.Abstractions;
 
 public interface IVehicleRepository
 {

@@ -1,13 +1,13 @@
+using Auction.Infrastructure.Models;
+
 using Infrastructure.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure;
+namespace Auction.Infrastructure;
 
-public class AuctionDbContext : DbContext
+public class AuctionDbContext(DbContextOptions<AuctionDbContext> options) : DbContext(options)
 {
-    public AuctionDbContext(DbContextOptions<AuctionDbContext> options) : base(options) { }
-
     public DbSet<VehicleEntity> Vehicles => Set<VehicleEntity>();
     public DbSet<SedanEntity> Sedans => Set<SedanEntity>();
     public DbSet<HatchbackEntity> Hatchbacks => Set<HatchbackEntity>();

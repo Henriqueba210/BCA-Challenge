@@ -1,7 +1,7 @@
 using Ardalis.Result;
 using MediatR;
 
-namespace Application.Features.Vehicle.Commands;
+namespace Auction.Application.Features.Vehicle.Commands;
 
 public record AddVehicleCommand(
     string Vin,

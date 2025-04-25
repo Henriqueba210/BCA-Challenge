@@ -1,7 +1,7 @@
-using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Infrastructure.Common;
+using Auction.Infrastructure.Models;
 
 namespace Infrastructure.Configurations;
 
