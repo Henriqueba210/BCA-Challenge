@@ -8,19 +8,33 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Domain\Domain.csproj"/>
+        <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0"/>
-        <PackageReference Include="MediatR" Version="12.4.1"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2"/>
-        <PackageReference Include="Serilog" Version="3.1.1"/>
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+        <PackageReference Include="MediatR" Version="12.4.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+        <PackageReference Include="Serilog" Version="3.1.1" />
+        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Common\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Features\Vehicle\Queries\Query\.keep" />
+      <None Remove="Features\Vehicle\Queries\Handler\.keep" />
+      <None Remove="Features\Vehicle\Commands\Validator\.keep" />
+      <None Remove="Features\Vehicle\Commands\Handler\.keep" />
+      <None Remove="Features\Vehicle\Commands\Command\.keep" />
+      <None Remove="Features\Auction\Queries\Validator\.keep" />
+      <None Remove="Features\Auction\Queries\Query\.keep" />
+      <None Remove="Features\Auction\Queries\Handler\.keep" />
+      <None Remove="Features\Auction\Commands\Validator\.keep" />
+      <None Remove="Features\Auction\Commands\Handler\.keep" />
+      <None Remove="Features\Auction\Commands\Command\.keep" />
     </ItemGroup>
 
 </Project>

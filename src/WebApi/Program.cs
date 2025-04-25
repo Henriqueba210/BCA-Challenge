@@ -1,10 +1,15 @@
 using System.Diagnostics;
 
+using Auction.Api.Common.Mapping;
 using Auction.Api.Endpoints;
-
-
 using Auction.Application;
 using Auction.Infrastructure;
+
+using AuctionServiceDefaults;
+
+using Mapster;
+
+using MapsterMapper;
 
 using Microsoft.AspNetCore.Http.Features;
 
@@ -21,15 +26,15 @@ builder.AddServiceDefaults();
 // Add services to the container.
 builder.Services
     .AddApplication()
-    .AddInfrastructure()
+    .AddInfrastructure(builder.Configuration, useInMemory: builder.Environment.IsEnvironment("Testing"))
     .AddOpenApi();
 
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(builder =>
+builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 {
-    builder.AllowAnyOrigin();
-    builder.AllowAnyMethod();
-    builder.AllowAnyHeader();
+    policyBuilder.AllowAnyOrigin();
+    policyBuilder.AllowAnyMethod();
+    policyBuilder.AllowAnyHeader();
 }));
 
 #pragma warning disable EXTEXP0018
@@ -55,6 +60,14 @@ builder.Services.AddProblemDetails(options =>
     };
 });
 
+var typeAdapterConfig = TypeAdapterConfig.GlobalSettings;
+// scans the assembly and gets the IRegister, adding the registration to the TypeAdapterConfig
+TypeAdapterConfig.GlobalSettings.Scan(typeof(MappingRegistration).Assembly);
+// register the mapper as Singleton service for my application
+var mapperConfig = new Mapper(typeAdapterConfig);
+builder.Services.AddSingleton<IMapper>(mapperConfig);
+
+
 WebApplication app = builder.Build();
 
 app.MapOpenApi();
@@ -71,7 +84,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapDefaultEndpoints();
+
+app.MapVehicleEndpoints();
 app.MapAuctionEndpoints();
+app.MapBidEndpoints();
 
 app.UseHttpsRedirection();
 
@@ -81,4 +98,7 @@ app.UseCors();
 
 await app.RunAsync();
 
-public abstract partial class Program;
+namespace Auction.Api
+{
+    public abstract partial class Program;
+}

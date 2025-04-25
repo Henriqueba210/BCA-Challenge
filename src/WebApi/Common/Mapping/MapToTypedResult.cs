@@ -39,4 +39,33 @@ public static class MapToTypedResult
                 type: "https://tools.ietf.org/html/rfc7231#section-6.5.1")
         };
     }
+
+    public static IResult ToTypedResult(this Result result)
+    {
+        return result.Status switch
+        {
+            ResultStatus.Ok => TypedResults.Ok(),
+            ResultStatus.NotFound => TypedResults.NotFound(
+                new ProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = "Resource Not Found",
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+                    Detail = result.Errors.FirstOrDefault() ?? "The requested resource was not found"
+                }),
+            ResultStatus.Invalid => TypedResults.BadRequest(
+                new ProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Validation Error",
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                    Detail = string.Join(", ", result.ValidationErrors.Select(e => e.ErrorMessage))
+                }),
+            _ => TypedResults.Problem(
+                title: "Internal Server Error",
+                detail: string.Join(", ", result.Errors),
+                statusCode: StatusCodes.Status500InternalServerError,
+                type: "https://tools.ietf.org/html/rfc7231#section-6.5.1")
+        };
+    }
 }

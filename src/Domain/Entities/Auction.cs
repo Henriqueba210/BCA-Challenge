@@ -1,20 +1,21 @@
-using Domain.ValueObjects;
-using Domain.Enums;
-using Auction.Domain.Common;
+using Auction.Domain.Enums;
 
 namespace Auction.Domain.Entities;
 
-public class AuctionEntity : BaseEntity<Guid>
+public class AuctionEntity
 {
-    public Vin VehicleVin { get; set; } = default!;
+    public Guid Id { get; set; }
+    public string VehicleVin { get; set; } = default!;
+    public BaseVehicle Vehicle { get; set; } = default!;
     public AuctionStatus Status { get; set; }
     public DateTime StartedAt { get; set; }
     public DateTime? ClosedAt { get; set; }
-    public List<Bid> Bids { get; set; } = new();
+    public required List<Bid> Bids { get; set; }
 }
 
-public class Bid : BaseEntity<Guid>
+public class Bid
 {
+    public Guid Id { get; set; }
     public Guid AuctionId { get; set; }
     public decimal Amount { get; set; }
     public DateTime PlacedAt { get; set; }

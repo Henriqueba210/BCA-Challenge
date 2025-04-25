@@ -1,10 +1,14 @@
-using Domain.Enums;
-using Domain.ValueObjects;
+using System.ComponentModel.DataAnnotations;
 
-namespace Infrastructure.Entities;
+using Auction.Domain.Enums;
 
-public abstract class VehicleEntity
+namespace Auction.Infrastructure.Models;
+
+public class VehicleEntity
 {
+    public int Id { get; set; } // Surrogate primary key
+
+    [Required]
     public string Vin { get; set; } = default!;
     public VehicleType Type { get; set; }
     public string Manufacturer { get; set; } = default!;
@@ -23,7 +27,7 @@ public class HatchbackEntity : VehicleEntity
     public int NumberOfDoors { get; set; }
 }
 
-public class SUVEntity : VehicleEntity
+public class SuvEntity : VehicleEntity
 {
     public int NumberOfSeats { get; set; }
 }

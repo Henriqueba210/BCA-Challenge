@@ -54,10 +54,18 @@ internal sealed class ValidationBehavior<TRequest, TResponse>(
 
         List<ValidationError> validationErrors = failures.Select(f => new ValidationError(f.ErrorMessage)).ToList();
 
-        Type resultType = typeof(Result<>).MakeGenericType(typeof(TResponse).GetGenericArguments());
-        MethodInfo? invalidMethod = resultType.GetMethod(nameof(Result<object>.Invalid),
-            new[] { typeof(List<ValidationError>) });
+        object? result = typeof(TResponse) switch
+        {
+            var t when t == typeof(Result) =>
+                Result.Invalid(validationErrors),
+            var t when t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Result<>) =>
+                typeof(Result<>)
+                    .MakeGenericType(t.GetGenericArguments())
+                    .GetMethod(nameof(Result<object>.Invalid), new[] { typeof(List<ValidationError>) })!
+                    .Invoke(null, [validationErrors]),
+            _ => throw new InvalidOperationException("TResponse must be Result or Result<T>.")
+        };
 
-        return (TResponse)invalidMethod!.Invoke(null, [validationErrors])!;
+        return (TResponse)result!;
     }
 }

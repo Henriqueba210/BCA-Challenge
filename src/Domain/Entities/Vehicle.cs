@@ -1,11 +1,10 @@
-using Domain.ValueObjects;
-using Domain.Enums;
-using Auction.Domain.Common;
+using Auction.Domain.Enums;
 
 namespace Auction.Domain.Entities;
 
-public abstract class BaseVehicle : BaseEntity<Vin>
+public class BaseVehicle
 {
+    public string Vin { get; set; } = default!;
     public VehicleType Type { get; protected set; }
     public string Manufacturer { get; set; } = default!;
     public string Model { get; set; } = default!;
@@ -25,10 +24,10 @@ public class Hatchback : BaseVehicle
     public Hatchback() { Type = VehicleType.Hatchback; }
 }
 
-public class SUV : BaseVehicle
+public class Suv : BaseVehicle
 {
     public int NumberOfSeats { get; set; }
-    public SUV() { Type = VehicleType.SUV; }
+    public Suv() { Type = VehicleType.SUV; }
 }
 
 public class Truck : BaseVehicle

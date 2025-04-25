@@ -14,15 +14,14 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Application\Application.csproj"/>
+        <ProjectReference Include="..\..\src\Application\Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Xunit"/>
+        <Using Include="Xunit" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Builders\" />
-      <Folder Include="Common\" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-namespace Domain.Enums;
+namespace Auction.Domain.Enums;
 
 public enum VehicleType
 {

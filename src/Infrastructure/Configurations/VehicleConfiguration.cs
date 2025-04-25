@@ -1,9 +1,9 @@
-using Infrastructure.Entities;
+using Auction.Infrastructure.Models;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Infrastructure.Common;
 
-namespace Infrastructure.Configurations;
+namespace Auction.Infrastructure.Configurations;
 
 public class VehicleConfiguration : IEntityTypeConfiguration<VehicleEntity>
 {
@@ -13,7 +13,7 @@ public class VehicleConfiguration : IEntityTypeConfiguration<VehicleEntity>
         builder.HasDiscriminator<string>("VehicleType")
             .HasValue<SedanEntity>("Sedan")
             .HasValue<HatchbackEntity>("Hatchback")
-            .HasValue<SUVEntity>("SUV")
+            .HasValue<SuvEntity>("SUV")
             .HasValue<TruckEntity>("Truck");
         builder.Property(v => v.Manufacturer).IsRequired();
         builder.Property(v => v.Model).IsRequired();
@@ -38,9 +38,9 @@ public class HatchbackConfiguration : IEntityTypeConfiguration<HatchbackEntity>
     }
 }
 
-public class SUVConfiguration : IEntityTypeConfiguration<SUVEntity>
+public class SuvConfiguration : IEntityTypeConfiguration<SuvEntity>
 {
-    public void Configure(EntityTypeBuilder<SUVEntity> builder)
+    public void Configure(EntityTypeBuilder<SuvEntity> builder)
     {
         builder.Property(s => s.NumberOfSeats).IsRequired();
     }

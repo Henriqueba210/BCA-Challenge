@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Auction.Infrastructure.Repositories;
+using Auction.Application.Features.Vehicle.Abstractions;
+using Auction.Application.Features.Auction.Abstractions;
+using Auction.Infrastructure.Models; // Add this using if not present
 
 namespace Auction.Infrastructure;
 
@@ -9,17 +12,16 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool useInMemory = false)
     {
+        // Register AuctionDbContext with PostgreSQL or InMemory database
         if (useInMemory)
         {
             services.AddDbContext<AuctionDbContext>(options =>
-                options.UseInMemoryDatabase("AuctionDb"));
+                options.UseInMemoryDatabase("AuctionDbTest"));
         }
         else
         {
-            var connectionString = configuration.GetConnectionString("Postgres") ??
-                                   throw new InvalidOperationException("Postgres connection string not found.");
             services.AddDbContext<AuctionDbContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
         }
 
         services.AddScoped<IVehicleRepository, VehicleRepository>();

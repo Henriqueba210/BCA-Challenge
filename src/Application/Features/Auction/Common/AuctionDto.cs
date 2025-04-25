@@ -10,7 +10,7 @@ public class AuctionDto
     public string Status { get; set; } = default!;
     public DateTime StartedAt { get; set; }
     public DateTime? ClosedAt { get; set; }
-    public List<BidDto> Bids { get; set; } = new();
+    public required List<BidDto> Bids { get; set; }
 }
 
 public class BidDto

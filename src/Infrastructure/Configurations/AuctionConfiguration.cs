@@ -1,9 +1,9 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Infrastructure.Common;
 using Auction.Infrastructure.Models;
 
-namespace Infrastructure.Configurations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Auction.Infrastructure.Configurations;
 
 public class AuctionConfiguration : IEntityTypeConfiguration<AuctionEntity>
 {
@@ -13,6 +13,10 @@ public class AuctionConfiguration : IEntityTypeConfiguration<AuctionEntity>
         builder.Property(a => a.VehicleVin).IsRequired();
         builder.Property(a => a.Status).IsRequired();
         builder.Property(a => a.StartedAt).IsRequired();
+        builder.HasOne(a => a.Vehicle)
+            .WithMany()
+            .HasForeignKey(a => a.VehicleVin)
+            .IsRequired();
         builder.HasMany(a => a.Bids)
             .WithOne()
             .HasForeignKey(b => b.AuctionId)
