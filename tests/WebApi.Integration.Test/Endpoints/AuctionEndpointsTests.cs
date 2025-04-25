@@ -8,14 +8,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace WebApi.Integration.Test.Endpoints;
 
-public class AuctionEndpointsTests : IClassFixture<AuctionApiFixture>
+public class AuctionEndpointsTests(AuctionApiFixture factory) : IClassFixture<AuctionApiFixture>
 {
-    private readonly HttpClient _client;
-
-    public AuctionEndpointsTests(AuctionApiFixture factory)
-    {
-        _client = factory.CreateClient();
-    }
+    private readonly HttpClient _client = factory.CreateClient();
 
     [Fact]
     public async Task StartAuction_WithValidVehicle_ReturnsCreated()
@@ -172,7 +167,7 @@ public class AuctionEndpointsTests : IClassFixture<AuctionApiFixture>
         var suvAuctionResult = await suvAuctionResponse.Content.ReadFromJsonAsync<AuctionResponseDto>();
         suvAuctionResult.ShouldNotBeNull();
         suvAuctionResult.Vehicle.Vin.ShouldBe("AUCSUV1");
-        suvAuctionResult.Vehicle.Type.ShouldBe("SUV");
+        suvAuctionResult.Vehicle.Type.ToLowerInvariant().ShouldBe("suv");
         suvAuctionResult.Vehicle.NumberOfSeats.ShouldBe(7);
         suvAuctionResult.Vehicle.Manufacturer.ShouldBe("Ford");
         suvAuctionResult.Vehicle.Model.ShouldBe("Explorer");

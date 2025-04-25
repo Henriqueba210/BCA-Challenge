@@ -8,12 +8,7 @@ namespace Application.Test.Features.Auction.Queries;
 
 public class ListAuctionsQueryHandlerTests
 {
-    private readonly IFixture _fixture;
-
-    public ListAuctionsQueryHandlerTests()
-    {
-        _fixture = new Fixture().Customize(new AutoMoqCustomization { ConfigureMembers = true });
-    }
+    private readonly IFixture _fixture = new Fixture().Customize(new AutoMoqCustomization { ConfigureMembers = true });
 
     [Fact]
     public async Task Handle_ShouldReturnAuctions_WhenFound()

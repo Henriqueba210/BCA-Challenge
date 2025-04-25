@@ -8,17 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auction.Infrastructure.Repositories;
 
-public class AuctionRepository : IAuctionRepository
+internal static class AuctionRepositoryLocks
 {
-    private readonly AuctionDbContext _context;
-    public AuctionRepository(AuctionDbContext context) => _context = context;
+    public static readonly ConcurrentDictionary<Guid, SemaphoreSlim> AuctionLocks = new();
+}
 
-    // Static dictionary to hold semaphores per auction
-    private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _auctionLocks = new();
-
+public class AuctionRepository(AuctionDbContext context) : IAuctionRepository
+{
     public async Task<AuctionEntity?> GetByVehicleVinAsync(string vin, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.Auctions
+        var entity = await context.Auctions
             .Include(a => a.Bids)
             .Include(a => a.Vehicle)
             .FirstOrDefaultAsync(a => a.VehicleVin == vin, cancellationToken);
@@ -27,7 +26,7 @@ public class AuctionRepository : IAuctionRepository
 
     public async Task<AuctionEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _context.Auctions
+        var entity = await context.Auctions
             .Include(a => a.Bids)
             .Include(a => a.Vehicle)
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
@@ -44,66 +43,52 @@ public class AuctionRepository : IAuctionRepository
                 bid.AuctionId = entity.Id;
             }
         }
-        var entry = await _context.Auctions.AddAsync(entity, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
-        await _context.Entry(entry.Entity).Collection(e => e.Bids).LoadAsync(cancellationToken);
-        await _context.Entry(entry.Entity).Reference(e => e.Vehicle).LoadAsync(cancellationToken);
+        var entry = await context.Auctions.AddAsync(entity, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        await context.Entry(entry.Entity).Collection(e => e.Bids).LoadAsync(cancellationToken);
+        await context.Entry(entry.Entity).Reference(e => e.Vehicle).LoadAsync(cancellationToken);
         return entry.Entity.Adapt<AuctionEntity>();
     }
 
-    public async Task<AuctionEntity> UpdateAsync(AuctionEntity auction, CancellationToken cancellationToken = default)
+    // Change: Accepts an optional BidEntity to add, instead of expecting the full list of bids
+    public async Task<AuctionEntity> UpdateAsync(AuctionEntity? auction = null, Bid? newBid = null, CancellationToken cancellationToken = default)
     {
-        var semaphore = _auctionLocks.GetOrAdd(auction.Id, _ => new SemaphoreSlim(1, 1));
+        var auctionId = auction?.Id ?? newBid?.AuctionId
+            ?? throw new ArgumentException("Either auction or newBid with AuctionId must be provided.");
+
+        var semaphore = AuctionRepositoryLocks.AuctionLocks.GetOrAdd(auctionId, _ => new SemaphoreSlim(1, 1));
         await semaphore.WaitAsync(cancellationToken);
         try
         {
-            var existingEntity = await _context.Auctions
+            var existingEntity = await context.Auctions
                 .Include(a => a.Bids)
                 .Include(a => a.Vehicle)
-                .FirstOrDefaultAsync(a => a.Id == auction.Id, cancellationToken)
+                .FirstOrDefaultAsync(a => a.Id == auctionId, cancellationToken)
                 ?? throw new InvalidOperationException("Auction not found");
 
-            // Check auction status before allowing bid updates
             if (existingEntity.Status != (int)Domain.Enums.AuctionStatus.Active)
                 throw new InvalidOperationException("Auction is not active");
 
-            // If a new bid was added, ensure it's higher than the previous highest
-            if (auction.Bids.Count > existingEntity.Bids.Count)
+            if (newBid != null)
             {
-                var bids = auction.Bids;
-                var newBid = bids[^1];
-                var previousHighest = bids.Count > 1 ? bids[^2].Amount : 0;
-                if (newBid.Amount <= previousHighest)
+                var highestBid = existingEntity.Bids.OrderByDescending(b => b.Amount).FirstOrDefault();
+                if (highestBid != null && newBid.Amount <= highestBid.Amount)
                     throw new InvalidOperationException("Bid amount must be higher than the current highest bid");
+
+                var bidEntity = newBid.Adapt<Models.BidEntity>();
+                bidEntity.AuctionId = existingEntity.Id;
+                existingEntity.Bids.Add(bidEntity);
+                context.Entry(bidEntity).State = EntityState.Added;
             }
 
-            // Use SetValues for scalar properties only
-            _context.Entry(existingEntity).CurrentValues.SetValues(auction.Adapt<Models.AuctionEntity>());
-
-            // Sync bids as before
-            var incomingBids = auction.Bids.Select(b => b.Id).ToHashSet();
-            existingEntity.Bids.RemoveAll(b => !incomingBids.Contains(b.Id));
-            foreach (var bid in auction.Bids)
+            if (auction != null)
             {
-                var existingBid = existingEntity.Bids.FirstOrDefault(b => b.Id == bid.Id);
-                if (existingBid == null)
-                {
-                    var newBid = bid.Adapt<Models.BidEntity>();
-                    newBid.AuctionId = existingEntity.Id;
-                    existingEntity.Bids.Add(newBid);
-                    _context.Entry(newBid).State = EntityState.Added;
-                }
-                else
-                {
-                    existingBid.Amount = bid.Amount;
-                    existingBid.PlacedAt = bid.PlacedAt;
-                    existingBid.Bidder = bid.Bidder;
-                }
+                context.Entry(existingEntity).CurrentValues.SetValues(auction.Adapt<Models.AuctionEntity>());
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
-            await _context.Entry(existingEntity).Collection(e => e.Bids).LoadAsync(cancellationToken);
-            await _context.Entry(existingEntity).Reference(e => e.Vehicle).LoadAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            await context.Entry(existingEntity).Collection(e => e.Bids).LoadAsync(cancellationToken);
+            await context.Entry(existingEntity).Reference(e => e.Vehicle).LoadAsync(cancellationToken);
 
             return existingEntity.Adapt<AuctionEntity>();
         }
@@ -115,7 +100,7 @@ public class AuctionRepository : IAuctionRepository
 
     public async Task<List<AuctionEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var entities = await _context.Auctions.Include(a => a.Bids).ToListAsync(cancellationToken);
+        var entities = await context.Auctions.Include(a => a.Bids).ToListAsync(cancellationToken);
         return entities.Adapt<List<AuctionEntity>>();
     }
 }

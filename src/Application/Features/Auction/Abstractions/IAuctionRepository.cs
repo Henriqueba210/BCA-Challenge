@@ -8,5 +8,5 @@ public interface IAuctionRepository
     Task<AuctionEntity?> GetByVehicleVinAsync(string vin, CancellationToken cancellationToken = default);
     Task<AuctionEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<AuctionEntity> AddAsync(AuctionEntity auction, CancellationToken cancellationToken = default);
-    Task<AuctionEntity> UpdateAsync(AuctionEntity auction, CancellationToken cancellationToken = default);
+    Task<AuctionEntity> UpdateAsync(AuctionEntity? auction = null, Bid? newBid = null, CancellationToken cancellationToken = default);
 }

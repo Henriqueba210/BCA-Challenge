@@ -22,7 +22,7 @@ public class CloseAuctionCommandHandler(IAuctionRepository auctionRepository) : 
             return Result.Invalid(new ValidationError("Auction is not active and cannot be closed."));
         auction.Status = AuctionStatus.Closed;
         auction.ClosedAt = DateTime.UtcNow;
-        var updatedAuction = await auctionRepository.UpdateAsync(auction, cancellationToken);
+        var updatedAuction = await auctionRepository.UpdateAsync(auction, cancellationToken: cancellationToken);
         return Result.Success(updatedAuction.Adapt<AuctionDto>());
     }
 }

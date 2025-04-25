@@ -1,13 +1,9 @@
 using Ardalis.Result;
-
 using Auction.Application.Features.Auction.Abstractions;
 using Auction.Application.Features.Auction.Commands.Command;
 using Auction.Application.Features.Auction.Common;
 using Auction.Domain.Entities;
-using Auction.Domain.Enums;
-
 using Mapster;
-
 using MediatR;
 
 namespace Auction.Application.Features.Auction.Commands.Handler;
@@ -16,13 +12,11 @@ public class PlaceBidCommandHandler(IAuctionRepository auctionRepository) : IReq
 {
     public async Task<Result<AuctionDto>> Handle(PlaceBidCommand request, CancellationToken cancellationToken)
     {
-        // Only fetch the auction, do not check status or bid amount here
         var auction = await auctionRepository.GetByVehicleVinAsync(request.Vin, cancellationToken);
 
         if (auction is null)
             return Result.NotFound("Auction does not exist");
 
-        // Create the bid, but let the repository handle validation and concurrency
         var bid = new Bid
         {
             Id = Guid.NewGuid(),
@@ -31,8 +25,9 @@ public class PlaceBidCommandHandler(IAuctionRepository auctionRepository) : IReq
             PlacedAt = DateTime.UtcNow,
             Bidder = request.Bidder
         };
-        auction.Bids.Add(bid);
-        var updatedAuction = await auctionRepository.UpdateAsync(auction, cancellationToken);
+
+        // Only pass the new bid to UpdateAsync
+        var updatedAuction = await auctionRepository.UpdateAsync(null, bid, cancellationToken);
         return Result.Success(updatedAuction.Adapt<AuctionDto>());
     }
 }

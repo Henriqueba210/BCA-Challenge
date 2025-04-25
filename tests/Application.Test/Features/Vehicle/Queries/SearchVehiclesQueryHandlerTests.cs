@@ -7,12 +7,7 @@ namespace Application.Test.Features.Vehicle.Queries;
 
 public class SearchVehiclesQueryHandlerTests
 {
-    private readonly IFixture _fixture;
-
-    public SearchVehiclesQueryHandlerTests()
-    {
-        _fixture = new Fixture().Customize(new AutoMoqCustomization { ConfigureMembers = true });
-    }
+    private readonly IFixture _fixture = new Fixture().Customize(new AutoMoqCustomization { ConfigureMembers = true });
 
     [Fact]
     public async Task Handle_ShouldReturnVehicles_WhenFound()
