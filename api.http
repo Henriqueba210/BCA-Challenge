@@ -1,0 +1,199 @@
+### 1. Add Vehicles (all types)
+
+// Add a Sedan
+POST http://localhost:5000/api/auction/vehicle/
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123",
+  "type": "Sedan",
+  "manufacturer": "Toyota",
+  "model": "Camry",
+  "year": 2020,
+  "startingBid": 10000,
+  "numberOfDoors": 4
+}
+
+// Add a Hatchback
+POST http://localhost:5000/api/auction/vehicle/
+Content-Type: application/json
+
+{
+  "vin": "HATCH456",
+  "type": "Hatchback",
+  "manufacturer": "Ford",
+  "model": "Focus",
+  "year": 2019,
+  "startingBid": 8000,
+  "numberOfDoors": 5
+}
+
+// Add an SUV
+POST http://localhost:5000/api/auction/vehicle/
+Content-Type: application/json
+
+{
+  "vin": "SUV789",
+  "type": "SUV",
+  "manufacturer": "Honda",
+  "model": "CRV",
+  "year": 2021,
+  "startingBid": 15000,
+  "numberOfSeats": 7
+}
+
+// Add a Truck
+POST http://localhost:5000/api/auction/vehicle/
+Content-Type: application/json
+
+{
+  "vin": "TRUCK321",
+  "type": "Truck",
+  "manufacturer": "Volvo",
+  "model": "FH",
+  "year": 2018,
+  "startingBid": 25000,
+  "loadCapacity": 12000
+}
+
+### 2. Attempt to add a vehicle with duplicate VIN (should fail)
+POST http://localhost:5000/api/auction/vehicle/
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123",
+  "type": "Sedan",
+  "manufacturer": "Toyota",
+  "model": "Corolla",
+  "year": 2022,
+  "startingBid": 11000,
+  "numberOfDoors": 4
+}
+
+### 3. Search for vehicles by type, manufacturer, model, year
+
+// Search by type
+GET http://localhost:5000/api/auction/vehicle/?type=Sedan
+
+// Search by manufacturer
+GET http://localhost:5000/api/auction/vehicle/?manufacturer=Honda
+
+// Search by model
+GET http://localhost:5000/api/auction/vehicle/?model=CRV
+
+// Search by year
+GET http://localhost:5000/api/auction/vehicle/?year=2020
+
+// Search by multiple filters
+GET http://localhost:5000/api/auction/vehicle/?type=Truck&manufacturer=Volvo
+
+### 4. Start an auction for a vehicle
+
+POST http://localhost:5000/api/auction/start
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123"
+}
+
+### 5. Attempt to start an auction for a non-existent vehicle (should fail)
+
+POST http://localhost:5000/api/auction/start
+Content-Type: application/json
+
+{
+  "vin": "DOESNOTEXIST"
+}
+
+### 6. Attempt to start an auction for a vehicle already in auction (should fail)
+
+POST http://localhost:5000/api/auction/start
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123"
+}
+
+### 7. Place a bid on an active auction
+
+POST http://localhost:5000/api/bid/
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123",
+  "amount": 10500,
+  "bidder": "alice"
+}
+
+### 8. Place a lower or equal bid (should fail)
+
+POST http://localhost:5000/api/bid/
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123",
+  "amount": 10500,
+  "bidder": "bob"
+}
+
+### 9. Place a higher bid
+
+POST http://localhost:5000/api/bid/
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123",
+  "amount": 11000,
+  "bidder": "charlie"
+}
+
+### 10. Place a bid on a vehicle with no active auction (should fail)
+
+POST http://localhost:5000/api/bid/
+Content-Type: application/json
+
+{
+  "vin": "SUV789",
+  "amount": 16000,
+  "bidder": "dave"
+}
+
+### 11. Close an auction
+
+POST http://localhost:5000/api/auction/close
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123"
+}
+
+### 12. Attempt to place a bid after auction is closed (should fail)
+
+POST http://localhost:5000/api/bid/
+Content-Type: application/json
+
+{
+  "vin": "SEDAN123",
+  "amount": 12000,
+  "bidder": "eve"
+}
+
+### 13. List all auctions (optionally filter by status, vehicle type, etc.)
+
+GET http://localhost:5000/api/auction/
+
+// Filter by status
+GET http://localhost:5000/api/auction/?status=Active
+
+// Filter by vehicle type
+GET http://localhost:5000/api/auction/?vehicleType=Sedan
+
+// Filter by manufacturer
+GET http://localhost:5000/api/auction/?manufacturer=Toyota
+
+// Filter by model
+GET http://localhost:5000/api/auction/?model=Camry
+
+// Filter by year
+GET http://localhost:5000/api/auction/?year=2020
+

@@ -1,0 +1,253 @@
+{
+  "info": {
+    "name": "BCA Challenge API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Add Sedan",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\",\n  \"type\": \"Sedan\",\n  \"manufacturer\": \"Toyota\",\n  \"model\": \"Camry\",\n  \"year\": 2020,\n  \"startingBid\": 10000,\n  \"numberOfDoors\": 4\n}"
+        }
+      }
+    },
+    {
+      "name": "Add Hatchback",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"HATCH456\",\n  \"type\": \"Hatchback\",\n  \"manufacturer\": \"Ford\",\n  \"model\": \"Focus\",\n  \"year\": 2019,\n  \"startingBid\": 8000,\n  \"numberOfDoors\": 5\n}"
+        }
+      }
+    },
+    {
+      "name": "Add SUV",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SUV789\",\n  \"type\": \"SUV\",\n  \"manufacturer\": \"Honda\",\n  \"model\": \"CRV\",\n  \"year\": 2021,\n  \"startingBid\": 15000,\n  \"numberOfSeats\": 7\n}"
+        }
+      }
+    },
+    {
+      "name": "Add Truck",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"TRUCK321\",\n  \"type\": \"Truck\",\n  \"manufacturer\": \"Volvo\",\n  \"model\": \"FH\",\n  \"year\": 2018,\n  \"startingBid\": 25000,\n  \"loadCapacity\": 12000\n}"
+        }
+      }
+    },
+    {
+      "name": "Add Duplicate VIN (should fail)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\",\n  \"type\": \"Sedan\",\n  \"manufacturer\": \"Toyota\",\n  \"model\": \"Corolla\",\n  \"year\": 2022,\n  \"startingBid\": 11000,\n  \"numberOfDoors\": 4\n}"
+        }
+      }
+    },
+    {
+      "name": "Search by Type",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/?type=Sedan", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""], "query": [{ "key": "type", "value": "Sedan" }] }
+      }
+    },
+    {
+      "name": "Search by Manufacturer",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/?manufacturer=Honda", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""], "query": [{ "key": "manufacturer", "value": "Honda" }] }
+      }
+    },
+    {
+      "name": "Search by Model",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/?model=CRV", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""], "query": [{ "key": "model", "value": "CRV" }] }
+      }
+    },
+    {
+      "name": "Search by Year",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/?year=2020", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""], "query": [{ "key": "year", "value": "2020" }] }
+      }
+    },
+    {
+      "name": "Search by Multiple Filters",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/vehicle/?type=Truck&manufacturer=Volvo", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "vehicle", ""], "query": [{ "key": "type", "value": "Truck" }, { "key": "manufacturer", "value": "Volvo" }] }
+      }
+    },
+    {
+      "name": "Start Auction",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/start", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "start"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Start Auction (non-existent vehicle, should fail)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/start", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "start"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"DOESNOTEXIST\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Start Auction (already active, should fail)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/start", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "start"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Place Bid",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/bid/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "bid", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\",\n  \"amount\": 10500,\n  \"bidder\": \"alice\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Place Lower/Equal Bid (should fail)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/bid/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "bid", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\",\n  \"amount\": 10500,\n  \"bidder\": \"bob\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Place Higher Bid",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/bid/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "bid", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\",\n  \"amount\": 11000,\n  \"bidder\": \"charlie\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Place Bid (no active auction, should fail)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/bid/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "bid", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SUV789\",\n  \"amount\": 16000,\n  \"bidder\": \"dave\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Close Auction",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/auction/close", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", "close"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Place Bid (after auction closed, should fail)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:5000/api/bid/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "bid", ""] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\": \"SEDAN123\",\n  \"amount\": 12000,\n  \"bidder\": \"eve\"\n}"
+        }
+      }
+    },
+    {
+      "name": "List All Auctions",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", ""] }
+      }
+    },
+    {
+      "name": "List Auctions by Status",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/?status=Active", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", ""], "query": [{ "key": "status", "value": "Active" }] }
+      }
+    },
+    {
+      "name": "List Auctions by Vehicle Type",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/?vehicleType=Sedan", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", ""], "query": [{ "key": "vehicleType", "value": "Sedan" }] }
+      }
+    },
+    {
+      "name": "List Auctions by Manufacturer",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/?manufacturer=Toyota", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", ""], "query": [{ "key": "manufacturer", "value": "Toyota" }] }
+      }
+    },
+    {
+      "name": "List Auctions by Model",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/?model=Camry", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", ""], "query": [{ "key": "model", "value": "Camry" }] }
+      }
+    },
+    {
+      "name": "List Auctions by Year",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:5000/api/auction/?year=2020", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auction", ""], "query": [{ "key": "year", "value": "2020" }] }
+      }
+    }
+  ]
+}

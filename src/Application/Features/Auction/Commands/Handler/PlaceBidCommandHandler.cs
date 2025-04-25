@@ -16,16 +16,13 @@ public class PlaceBidCommandHandler(IAuctionRepository auctionRepository) : IReq
 {
     public async Task<Result<AuctionDto>> Handle(PlaceBidCommand request, CancellationToken cancellationToken)
     {
+        // Only fetch the auction, do not check status or bid amount here
         var auction = await auctionRepository.GetByVehicleVinAsync(request.Vin, cancellationToken);
-        
+
         if (auction is null)
             return Result.NotFound("Auction does not exist");
-        
-        if (auction!.Status != AuctionStatus.Active)
-            return Result.Invalid(new ValidationError("Auction is not active"));
-        var highestBid = auction.Bids.OrderByDescending(b => b.Amount).FirstOrDefault();
-        if (highestBid != null && request.Amount <= highestBid.Amount)
-            return Result.Invalid(new ValidationError("Bid amount must be higher than the current highest bid"));
+
+        // Create the bid, but let the repository handle validation and concurrency
         var bid = new Bid
         {
             Id = Guid.NewGuid(),

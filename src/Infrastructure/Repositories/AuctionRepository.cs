@@ -63,6 +63,20 @@ public class AuctionRepository : IAuctionRepository
                 .FirstOrDefaultAsync(a => a.Id == auction.Id, cancellationToken)
                 ?? throw new InvalidOperationException("Auction not found");
 
+            // Check auction status before allowing bid updates
+            if (existingEntity.Status != (int)Domain.Enums.AuctionStatus.Active)
+                throw new InvalidOperationException("Auction is not active");
+
+            // If a new bid was added, ensure it's higher than the previous highest
+            if (auction.Bids.Count > existingEntity.Bids.Count)
+            {
+                var bids = auction.Bids;
+                var newBid = bids[^1];
+                var previousHighest = bids.Count > 1 ? bids[^2].Amount : 0;
+                if (newBid.Amount <= previousHighest)
+                    throw new InvalidOperationException("Bid amount must be higher than the current highest bid");
+            }
+
             // Use SetValues for scalar properties only
             _context.Entry(existingEntity).CurrentValues.SetValues(auction.Adapt<Models.AuctionEntity>());
 
