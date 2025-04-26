@@ -16,7 +16,6 @@ public class AddVehicleCommandHandler(IVehicleRepository vehicleRepository) : IR
 {
     public async Task<Result<VehicleDto>> Handle(AddVehicleCommand request, CancellationToken cancellationToken)
     {
-        // Check for duplicate VIN using string
         var existing = await vehicleRepository.GetByVinAsync(request.Vin, cancellationToken);
         if (existing is not null)
             return Result.Invalid(new ValidationError($"A vehicle with VIN '{request.Vin}' already exists."));

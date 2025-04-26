@@ -50,7 +50,6 @@ public class AuctionRepository(AuctionDbContext context) : IAuctionRepository
         return entry.Entity.Adapt<AuctionEntity>();
     }
 
-    // Change: Accepts an optional BidEntity to add, instead of expecting the full list of bids
     public async Task<AuctionEntity> UpdateAsync(AuctionEntity? auction = null, Bid? newBid = null, CancellationToken cancellationToken = default)
     {
         var auctionId = auction?.Id ?? newBid?.AuctionId

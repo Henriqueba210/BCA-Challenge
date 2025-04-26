@@ -16,8 +16,6 @@ public class VehicleRepository(AuctionDbContext context, IMapper mapper) : IVehi
 
     public async Task<BaseVehicle?> GetByVinAsync(string vin, CancellationToken cancellationToken = default)
     {
-        // EF Core cannot translate string.Equals with StringComparison.
-        // Use ToLower() for case-insensitive comparison (works for most cases).
         var entity = await _context.Set<VehicleEntity>()
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.Vin.ToLower() == vin.ToLower(), cancellationToken);

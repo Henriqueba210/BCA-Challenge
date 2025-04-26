@@ -1,6 +1,5 @@
 using Auction.Application.Features.Auction.Abstractions;
 using Auction.Application.Features.Vehicle.Abstractions;
-using Auction.Infrastructure.Models; // Add this using if not present
 using Auction.Infrastructure.Repositories;
 
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool useInMemory = false)
     {
-        // Register AuctionDbContext with PostgreSQL or InMemory database
         if (useInMemory)
         {
             services.AddDbContext<AuctionDbContext>(options =>
