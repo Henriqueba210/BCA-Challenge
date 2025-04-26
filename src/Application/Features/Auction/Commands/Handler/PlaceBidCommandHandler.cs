@@ -26,7 +26,6 @@ public class PlaceBidCommandHandler(IAuctionRepository auctionRepository) : IReq
             Bidder = request.Bidder
         };
 
-        // Only pass the new bid to UpdateAsync
         var updatedAuction = await auctionRepository.UpdateAsync(null, bid, cancellationToken);
         return Result.Success(updatedAuction.Adapt<AuctionDto>());
     }
