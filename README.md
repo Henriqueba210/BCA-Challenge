@@ -3,7 +3,7 @@ Problem Statement: Car Auction Management System
 
 # BCA Requirements
 
-You are tasked with implementing a simple Car Auction Management System. The system should handle different types of vehicles: Sedans, SUVs, Hatchbacks and Trucks.
+You are tasked with implementing a simple Car Auction Management System. The system should handle different types of vehicles: Sedans, SUVs, Hatchbacks, and Trucks.
 Each of these types has different attributes:
 • Hatchback: Number of doors, manufacturer, model, year, and starting bid.
 • Sudan: Number of doors, manufacturer, model, year, and starting bid.
@@ -45,7 +45,7 @@ You can run the project in two main ways:
 
 ### 1. Using Aspire (Recommended for Development & Integration Testing)
 
-- **Aspire** enables running the application and its dependencies (like PostgreSQL) directly from the IDE (Visual Studio/VS Code) or via the `dotnet aspire` CLI.
+- **Aspire** enables running the application and its dependencies (like PostgreSQL) directly from the IDE (Visual Studio/VS Code/Rider) or via the `dotnet aspire` CLI.
 - Aspire manages service orchestration, environment variables, and health checks for a smooth developer experience.
 - Integration tests are configured to use Aspire resources, ensuring the app is tested end-to-end with a real PostgreSQL database.
 
@@ -57,6 +57,13 @@ You can run the project in two main ways:
   docker-compose up --build
   ```
 - The API will be available at `http://localhost:8080` and PostgreSQL at `localhost:5432`.
+
+## API Examples
+
+- See [`api.http`](./api.http) for sample HTTP requests for all endpoints.
+- See [`api.postman_collection.json`](./api.postman_collection.json) for a ready-to-import Postman collection.
+
+---
 
 ## Architecture
 
@@ -72,7 +79,18 @@ You can run the project in two main ways:
 
 - **Entity Framework Core + Npgsql**: Data persistence is handled by EF Core with the Npgsql driver for PostgreSQL. Migrations are used to manage schema changes.
 
-- **Concurrency Control**: A per-auction `SemaphoreSlim` is used in the repository to ensure that bid placements and auction updates for the same auction are processed sequentially, preventing race conditions.
+- **Concurrency Control**: A per-auction `Semaphore` is used in the repository to ensure that bid placements and auction updates for the same auction are processed sequentially, preventing race conditions.
+
+## Design Decisions & Assumptions
+
+- The system is designed for extensibility and testability, following clean architecture and SOLID principles.
+- All business rules are enforced at the application layer where applicable, with validation and error handling at every step.
+- Some business logic regarding auction state and bid placements is done in its repository so that rules like highest bid tracking and auction state management are done with the semaphore to ensure thread safety.
+- The use of MediatR and FluentValidation decouples business logic from the API layer.
+- Integration tests ensure the system works end-to-end, including with real database state and concurrency scenarios.
+- The use of Semaphore for auction locking ensures that concurrent operations are handled correctly and sequentially.
+- The system is designed to be easily extendable for future vehicle types or auction features.
+---
 
 ## Endpoints
 
@@ -130,11 +148,17 @@ You can run the project in two main ways:
 - Duplicate VINs, invalid vehicle types, out-of-range values, and other invalid inputs are rejected with clear error messages.
 - Attempting to start an auction for a non-existent or already-auctioned vehicle, or placing invalid bids, returns appropriate HTTP error responses.
 
+### Concurrency & Auction Locking
+
+- The repository uses a static `ConcurrentDictionary<Guid, SemaphoreSlim>` to lock updates per auction.
+- This ensures that concurrent bid placements and auction updates for the same auction are processed sequentially, preventing race conditions and unintended overwrites.
+- The semaphore is released after the operation completes, allowing other operations to proceed.
+
 ## Testing
 
 ### Unit Tests
 
-- All core business logic (commands, validation, domain rules) is covered by unit tests.
+- Unit tests cover all core business logic (commands, validation, domain rules).
 
 ### Integration Tests
 
@@ -146,27 +170,4 @@ You can run the project in two main ways:
   - Searching vehicles
   - Starting/closing auctions
   - Placing valid and invalid bids
-  - Ensuring auction and bid state transitions are correct
-
-### Concurrency & Auction Locking
-
-- The repository uses a static `ConcurrentDictionary<Guid, SemaphoreSlim>` to lock updates per auction.
-- This ensures that concurrent bid placements and auction updates for the same auction are processed sequentially, preventing race conditions and data corruption.
-
----
-
-## API Examples
-
-- See [`api.http`](./api.http) for sample HTTP requests for all endpoints.
-- See [`api.postman_collection.json`](./api.postman_collection.json) for a ready-to-import Postman collection.
-
----
-
-## Design Decisions & Assumptions
-
-- The system is designed for extensibility and testability, following clean architecture and SOLID principles.
-- All business rules are enforced at the application layer, with validation and error handling at every step.
-- The use of MediatR and FluentValidation decouples business logic from the API layer.
-- Integration tests ensure the system works end-to-end, including with real database state and concurrency scenarios.
-
----
+  - Ensuring auction and bid state transitions are correct and are processed sequentially.
