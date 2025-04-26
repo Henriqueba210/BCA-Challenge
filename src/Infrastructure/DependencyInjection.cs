@@ -21,7 +21,7 @@ public static class DependencyInjection
         {
             services.AddDbContext<AuctionDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("postgresdb")
-                    ?? throw new InvalidOperationException("Connection string 'postgresdb' not found.")));
+                    ?? configuration.GetConnectionString("DefaultConnection")));
         }
 
         services.AddScoped<IVehicleRepository, VehicleRepository>();
